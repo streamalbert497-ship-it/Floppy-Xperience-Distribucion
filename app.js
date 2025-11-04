@@ -159,6 +159,7 @@ function showSection(id) {
 }
 
 /* ========== Catalog Rendering ========== */
+/* 1) Reemplaza renderCatalog para incluir botones "Comprar" + "Ver más" en cada tarjeta */
 function renderCatalog() {
   const container = document.getElementById('catalogContainer');
   if (!container) return;
@@ -203,28 +204,35 @@ function renderCatalog() {
 
       if (prod.oferta || prod.promo) card.classList.add('is-promoted');
 
+      // Build compact visible elements; longer info remains in modal (detalles)
       const precioHtml = prod.oferta
         ? `<span class="oferta">Oferta: ${precioCOP(prod.oferta)} <span style="font-size:0.95em;text-decoration:line-through;color:#aaa;">${precioCOP(prod.precio)}</span></span>`
-        : `<span>${precioCOP(prod.precio)}</span>`;
+        : `<span class="precio">${precioCOP(prod.precio)}</span>`;
       const promoHtml = prod.promo ? `<span class="promo">${htmlEscape(prod.promo)}</span>` : '';
       const descHtml = Array.isArray(prod.descripcion)
         ? `<ul class="desc-list">${prod.descripcion.map(d => `<li>${htmlEscape(d)}</li>`).join('')}</ul>`
-        : `<p>${htmlEscape(prod.descripcion || '')}</p>`;
+        : `<p class="card-description">${htmlEscape(prod.descripcion || '')}</p>`;
 
       const agotadoHtml = prod.agotado ? `<div><span class="agotado-badge">Agotado</span></div>` : '';
-      const buyButton = prod.agotado
-        ? `<button class="btn" disabled style="opacity:0.5;cursor:not-allowed;">Agotado</button>`
-        : `<button class="btn" onclick="addToCart('${prod.id}')">Comprar</button>`;
 
+      // En la tarjeta mostramos img, nombre y botones. El resto será visible en el modal "Ver más".
       card.innerHTML = `
         <img class="product-image" src="${prod.imagen || 'images/placeholder.png'}" alt="${htmlEscape(prod.nombre)}" onclick="showProductDetails('${prod.id}')" style="cursor:pointer">
-        ${promoHtml}
         ${agotadoHtml}
         <h3 onclick="showProductDetails('${prod.id}')" style="cursor:pointer">${htmlEscape(prod.nombre)}</h3>
-        ${descHtml}
-        ${precioHtml}
-        ${buyButton}
+        <div class="card-actions">
+          ${prod.agotado ? `<button class="btn" disabled style="opacity:0.5;cursor:not-allowed;">Agotado</button>` : `<button class="btn" onclick="addToCart('${prod.id}')">Comprar</button>`}
+          <button class="btn small ver-mas-btn" onclick="showProductDetails('${prod.id}')">Ver más</button>
+        </div>
+
+        <!-- detailed info hidden in desktop card area but used for accessibility / desktop view -->
+        <div class="card-info" aria-hidden="true" style="display:none;">
+          ${promoHtml}
+          ${descHtml}
+          ${precioHtml}
+        </div>
       `;
+
       grid.appendChild(card);
     });
 
@@ -1014,6 +1022,45 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCatalog();
   renderHomeExtras();
   renderAdminPanel();
+
+
+function setupMobileColumnsControl() {
+  const controlsWrap = document.querySelector('.catalog-controls');
+  if (!controlsWrap) return;
+
+  // evitar duplicar control
+  if (document.getElementById('mobileColumnsSelect')) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'mobile-columns-control';
+  wrapper.innerHTML = `
+    <label for="mobileColumnsSelect">Productos/ fila (móvil)</label>
+    <select id="mobileColumnsSelect" aria-label="Productos por fila en móvil">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+  `;
+  controlsWrap.appendChild(wrapper);
+
+  const select = document.getElementById('mobileColumnsSelect');
+  // cargar preferencia previa
+  const saved = Number(localStorage.getItem('catalog_mobile_columns')) || parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mobile-columns')) || 2;
+  if ([1,2,3,4].includes(saved)) {
+    select.value = String(saved);
+    document.documentElement.style.setProperty('--mobile-columns', String(saved));
+  }
+
+  select.addEventListener('change', (e) => {
+    const v = Number(e.target.value) || 2;
+    document.documentElement.style.setProperty('--mobile-columns', String(v));
+    localStorage.setItem('catalog_mobile_columns', String(v));
+    // re-render por si hace falta (opcional)
+    try { renderCatalog(); } catch (err) { /* ignore */ }
+  });
+}
+
 
   // Login/logout
   const loginForm = document.getElementById('adminLoginForm'); if (loginForm) loginForm.onsubmit = adminLogin;
