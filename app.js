@@ -1061,21 +1061,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Mobile class setup
   (function setupMobileClass(){
-// --- Insertar dentro de document.addEventListener('DOMContentLoaded', ...) ---
-// Detectar dispositivo / ancho y agregar clase al <html> para estilos específicos
-(function setupMobileClass(){
-  function updateMobileClass() {
-    const isMobile = window.matchMedia && window.matchMedia('(max-width: 720px)').matches;
-    if (isMobile) document.documentElement.classList.add('is-mobile');
-    else document.documentElement.classList.remove('is-mobile');
-  }
-  // Ejecutar al inicio
-  updateMobileClass();
-  // Escuchar cambios de tamaño (rotación o redimension)
-  window.addEventListener('resize', () => {
-    // throttle simple
-    clearTimeout(window.__mobileClassTimeout);
-    window.__mobileClassTimeout = setTimeout(updateMobileClass, 120);
-  });
-})();
+    function updateMobileClass() {
+      const isMobile = window.matchMedia && window.matchMedia('(max-width: 720px)').matches;
+      if (isMobile) document.documentElement.classList.add('is-mobile');
+      else document.documentElement.classList.remove('is-mobile');
+    }
+    updateMobileClass();
+    window.addEventListener('resize', () => {
+      clearTimeout(window.__mobileClassTimeout);
+      window.__mobileClassTimeout = setTimeout(updateMobileClass, 120);
+    });
+  })();
 });
