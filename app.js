@@ -159,7 +159,7 @@ function showSection(id) {
 }
 
 /* ========== Catalog Rendering ========== */
-/* 1) Reemplaza renderCatalog para incluir botones "Comprar" + "Ver más" en cada tarjeta */
+/* Reemplaza únicamente la función renderCatalog en tu app.js por esta versión */
 function renderCatalog() {
   const container = document.getElementById('catalogContainer');
   if (!container) return;
@@ -215,17 +215,21 @@ function renderCatalog() {
 
       const agotadoHtml = prod.agotado ? `<div><span class="agotado-badge">Agotado</span></div>` : '';
 
-      // En la tarjeta mostramos img, nombre y botones. El resto será visible en el modal "Ver más".
+      // En la tarjeta mostramos img, nombre, precio visible y botones. El resto será visible en el modal (detalles)
       card.innerHTML = `
         <img class="product-image" src="${prod.imagen || 'images/placeholder.png'}" alt="${htmlEscape(prod.nombre)}" onclick="showProductDetails('${prod.id}')" style="cursor:pointer">
         ${agotadoHtml}
         <h3 onclick="showProductDetails('${prod.id}')" style="cursor:pointer">${htmlEscape(prod.nombre)}</h3>
+
+        <!-- Precio visible fuera de la tarjeta -->
+        <div class="card-price" aria-hidden="false">${precioHtml}</div>
+
         <div class="card-actions">
           ${prod.agotado ? `<button class="btn" disabled style="opacity:0.5;cursor:not-allowed;">Agotado</button>` : `<button class="btn" onclick="addToCart('${prod.id}')">Comprar</button>`}
-          <button class="btn small ver-mas-btn" onclick="showProductDetails('${prod.id}')">Ver más</button>
+          <button class="btn small ver-mas-btn" onclick="showProductDetails('${prod.id}')">Mas Info</button>
         </div>
 
-        <!-- detailed info hidden in desktop card area but used for accessibility / desktop view -->
+        <!-- detailed info hidden for compact view but used for accessibility / desktop view -->
         <div class="card-info" aria-hidden="true" style="display:none;">
           ${promoHtml}
           ${descHtml}
