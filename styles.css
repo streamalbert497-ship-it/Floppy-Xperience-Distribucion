@@ -1071,3 +1071,39 @@ main, .section {
   border-radius: 8px;
   font-weight: 700;
 }
+
+
+
+
+
+/* Añade este bloque al final de tu styles.css (o donde quieras) para estilizar los precios visibles en tarjeta */
+.card-price {
+  margin-top: 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--neon-cyan, #00ffd6);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+/* Asegurar clases internas se vean bien */
+.product-card .precio {
+  color: var(--neon-cyan, #00ffd6);
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+.product-card .oferta {
+  color: var(--neon-pink, #ff295e);
+  font-weight: 900;
+  font-size: 1.03rem;
+}
+.product-card .oferta small,
+.product-card .oferta span strike,
+.product-card .oferta del { color: #aaa; }
+
+/* En móvil mantener precio visible y adaptado */
+@media (max-width: 720px) {
+  .card-price { font-size: 0.98rem; font-weight: 800; color: var(--neon-cyan, #00ffd6); }
+  .product-card .precio, .product-card .oferta { font-size: 0.98rem; }
+}
