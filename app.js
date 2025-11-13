@@ -1545,8 +1545,6 @@ function endTutorial() {
 
 
 
-
-
 /* Instrucciones:
    Añade el siguiente bloque al final de tu app.js (o integra las funciones dentro del mismo archivo).
    - Llama a highlightCartAndShowPrompt() desde addToCart (ya incluido en el ejemplo).
