@@ -1261,7 +1261,7 @@ function setupMobileColumnsControl() {
     prompt.innerHTML = `
       <div>
         <h3>¿Deseas ver los tips?</h3>
-        <p>Recomendamos usar zoom 80% para mejor visualización. El siguiente aviso flotante mostrará cómo usar el zoom desde una laptop.</p>
+        <p>Recomendamos usar zoom 80% para mejor visualización. Los siguientes avisos flotantes mostrarán cómo usar el zoom desde una laptop y desde un dispositivo movil.</p>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px;">
           <button id="efStartTut" class="btn">Sí, empezar</button>
           <button id="efSkipTut" class="btn" style="background:#bbb;color:#222;">No, gracias</button>
@@ -1622,3 +1622,4 @@ window.addToCart = function (id) {
     console.error('addToCart error (fallback):', e);
   }
 };
+
