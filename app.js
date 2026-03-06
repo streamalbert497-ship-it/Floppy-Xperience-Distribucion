@@ -189,10 +189,30 @@ function renderCatalog() {
   // categories
   const cats = [...new Set(PRODUCTS.map(p => p.categoria || 'Sin categoría'))];
   cats.forEach(cat => {
-    const catTitle = document.createElement('div');
-    catTitle.className = 'category-title';
-    catTitle.innerText = cat;
-    container.appendChild(catTitle);
+ 
+
+        // CREAR HEADER PLEGABLE (CUADRO COLORIDO)
+    const catHeader = document.createElement('div');
+    catHeader.className = 'category-header collapsed'; // COMIENZA CONTRAÍDO
+    catHeader.setAttribute('data-category', cat);
+    catHeader.innerHTML = `
+      <div class="category-header-content">
+        <span class="category-toggle">▶</span>
+        <div style="flex: 1;">
+          <h3 class="category-title">${htmlEscape(cat)}</h3>
+          <p class="category-hint">Da click para desplegar</p>
+        </div>
+      </div>
+    `;
+    container.appendChild(catHeader);
+
+    // CREAR CONTENEDOR DE PRODUCTOS (inicialmente plegado)
+    const catContent = document.createElement('div');
+    catContent.className = 'category-container collapsed'; // COMIENZA CONTRAÍDO
+    catContent.setAttribute('data-category', cat);
+
+
+
 
     const grid = document.createElement('div');
     grid.className = 'grid';
@@ -240,9 +260,19 @@ function renderCatalog() {
       grid.appendChild(card);
     });
 
-    container.appendChild(grid);
+      catContent.appendChild(grid);
+    container.appendChild(catContent);
+    // BIND EVENTO CLICK AL HEADER PARA PLEGAR/DESPLEGAR
+    catHeader.addEventListener('click', function() {
+      const relatedContent = container.querySelector(`.category-container[data-category="${cat}"]`);
+      if (relatedContent) {
+        relatedContent.classList.toggle('collapsed');
+        catHeader.classList.toggle('collapsed');
+      }
+    });
   });
 }
+
 
 /* ========== Home (Favorites + Promos) ========== */
 function renderHomeExtras() {
@@ -1622,4 +1652,5 @@ window.addToCart = function (id) {
     console.error('addToCart error (fallback):', e);
   }
 };
+
 
